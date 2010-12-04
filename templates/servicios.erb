@@ -1,0 +1,11 @@
+<ul>
+  <% @jurisdicciones.each do |j|  %>
+  <li><%= j.nombre %>
+    <ul>
+      <% j.servicios.all.each do |s| %>
+      <li><a href="/<%= s.id %>"><%= s.nombre %></A> - <span style="<%= 'color: red' if s.variacion < 0 %>"><%= s.variacion %></span></li>
+      <% end %>
+    </ul>
+ </li>
+  <% end %>
+</ul>

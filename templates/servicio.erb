@@ -1,0 +1,156 @@
+<script language="javascript" type="text/javascript" src="/js/plugins/jqplot.barRenderer.js"></script> 
+<script language="javascript" type="text/javascript" src="/js/plugins/jqplot.categoryAxisRenderer.js"></script> 
+<script language="javascript" type="text/javascript" src="/js/plugins/jqplot.canvasAxisTickRenderer.js"></script> 
+<script language="javascript" type="text/javascript" src="/js/plugins/jqplot.canvasTextRenderer.js"></script> 
+<script language="javascript" type="text/javascript" src="/js/plugins/jqplot.pointLabels.js"></script> 
+
+<% min = @total_credito_inicial %>
+<% lines = @programas.map do |p|
+   r = Registro.last(:servicio => @servicio, :programa_name => p, :order => [:fecha.asc]).credito 
+   if @total_credito_inicial + r < min
+     min = @total_credito_inicial + r
+   end 
+   (r - Registro.first(:servicio => @servicio, :programa_name => p, :order => [:fecha.asc]).credito)
+end %>
+<% lines = lines.insert(0, @total_credito_inicial) %>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var line1 = <%= lines.inspect %>;
+    var ticks = ['<%= @registros.first.fecha.to_s %>', '<%= @programas.join("', '") %>', '<%= @registros.last.fecha.to_s %>'];
+
+    plot1 = $.jqplot('chart1', [line1], {
+        title: 'Variacion de asignacion presupuestaria por programa',
+        useNegativeColors: true,
+        seriesDefaults:{
+            seriesColors: ['#0000ff'],
+            negativeSeriesColors:  ['#ff0000'],
+            renderer:$.jqplot.BarRenderer, 
+            rendererOptions:{
+                waterfall:true,
+                // varyBarColor: true
+            },
+            pointLabels: {
+                hideZeros: true
+            },
+            yaxis:'y2axis'
+        },
+        axes:{
+            xaxis:{
+                renderer:$.jqplot.CategoryAxisRenderer, 
+                ticks:ticks,
+                tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                tickOptions: {
+                    angle: -45,
+                    fontSize: '8pt',
+                    showMark: false,
+                    showGridline: false
+                }
+            },
+            y2axis: {
+                min: <%= min * 0.9 %>,
+                // tickInterval: <%= (@total_credito / 20).to_i %>
+            }
+        }
+    });
+});
+</script>
+
+
+<% min = @total_credito_inicial %>
+<% lines = (@semanas.size - 1).times.map do |i| 
+   sem_prox = Registro.sum(:credito, :conditions => ['servicio_id = ? AND fecha = ?', @servicio.id, @semanas[i+1]])
+   sem = Registro.sum(:credito, :conditions => ['servicio_id = ? AND fecha = ?', @servicio.id, @semanas[i]])
+   if sem_prox < min
+     min = sem_prox
+   end
+   sem_prox - sem
+end %>
+
+<% lines.insert(0, @total_credito_inicial) %>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var line1 = <%= lines.inspect %>;
+    var ticks = ['<%= @semanas.join("', '") %>', 'Final'];
+
+    plot1 = $.jqplot('chart2', [line1], {
+        title: 'Variacion de asignacion presupuestaria por semana',
+        useNegativeColors: true,
+        //seriesColors: ['#0000ff'],
+        negativeSeriesColors:  ['#ff0000'],
+        seriesDefaults:{
+            renderer:$.jqplot.BarRenderer, 
+            rendererOptions:{
+                waterfall:true,
+                // varyBarColor: true
+            },
+            pointLabels: {
+                hideZeros: true
+            },
+            yaxis:'y2axis'
+        },
+        axes:{
+            xaxis:{
+                renderer:$.jqplot.CategoryAxisRenderer, 
+                ticks:ticks,
+                tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                tickOptions: {
+                    angle: -45,
+                    fontSize: '8pt',
+                    showMark: false,
+                    showGridline: false
+                }
+            },
+            y2axis: {
+                min: <%= min * 0.9 %>,
+                autoscale: true
+                // tickInterval: <%= (@total_credito / 20).to_i %>
+            }
+        }
+    });
+});
+</script>
+
+
+
+<h1><%= @servicio.nombre %></h1>
+
+<p><strong>Total Credito:</strong>: <%= @total_credito %></p>
+
+<div style="width: 900px; height: 650px" id="chart1"></div>
+<div style="width: 900px; height: 650px" id="chart2"></div>
+
+<table>
+<tr>
+  <th>Programa</th>
+  <th>%</th>
+</tr>
+<% Registro.all(:fecha => @registros.last.fecha, :servicio => @servicio).each do |r| %>
+<tr>
+  <td><%= r.programa_name %></td>
+  <td><%= r.credito * 100 / @total_credito %></td>
+</tr>
+<% end %>
+</table>
+
+<table>
+<tr>
+  <th>Fecha</th>
+  <th>Programa</th>
+  <th>Credito</th>
+  <th>Compromiso</th>
+  <th>Devengado</th>
+  <th>Pagado</th>
+</tr>
+<% @registros.each do |r| %>
+<tr>
+  <td><%= r.fecha %></td>
+  <td><%= r.programa_name %></td>
+  <td><%= r.credito %></td>
+  <td><%= r.compromiso %></td>
+  <td><%= r.devengado %></td>
+  <td><%= r.pagado %></td>
+</tr>
+<% end %>
+</table>

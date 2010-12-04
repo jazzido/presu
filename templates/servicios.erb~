@@ -1,0 +1,11 @@
+<ul>
+  <% @jurisdicciones.each |j| do %>
+  <li><%= j.nombre %>
+    <ul>
+      <% j.servicios.all.each |s| do %>
+        <li><a href="/<%= s.id"><% s.nombre %></A></li>
+      <% end %>
+    </ul>
+ </li>
+  <% end %>
+</ul>
