@@ -1,10 +1,15 @@
-Visualizaci髇 de Ejecuci髇 Presupuestaria
+Visualizaci贸n de Ejecuci贸n Presupuestaria
 =========================================
 
-Visualizaci髇 de las reasignaciones presupuestarias a los Servicios Administrativos Financieros del Estado
+Visualizaci贸n de las reasignaciones presupuestarias a los Servicios Administrativos Financieros del Estado
 
-Aplicaci髇 desarrollada en ~4 horas durante el Hackathon de Datos Abiertos organizado por [GarageLab](http://garagelab.tumblr.com)
-el 4 de Diciembre de 2010. 
+Aplicaci贸n desarrollada en ~4 horas durante el Hackathon de Datos Abiertos organizado por [GarageLab](http://garagelab.tumblr.com)
+el 4 de Diciembre de 2010.
+
+Origen de los datos
+-------------------
+
+http://sg.mecon.ar/ejecucion/ 
 
 
 Requerimientos
@@ -16,7 +21,7 @@ Requerimientos
 Autores
 -------
 
-  - Manuel Aristar醤 ([@manuelaristaran](http://twitter.com/manuelaristaran))
-  - Gabriela "gaba" Rodr韌uez ([@gaba](http://twitter.com/gaba))
+  - Manuel Aristar谩n ([@manuelaristaran](http://twitter.com/manuelaristaran))
+  - Gabriela "gaba" Rodr铆guez ([@gaba](http://twitter.com/gaba))
   - Emiliano Kargieman ([@earlkman](http://twitter.com/earlkman))
   - Gonzalo Iglesias
